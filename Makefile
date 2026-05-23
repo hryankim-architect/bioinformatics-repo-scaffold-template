@@ -2,7 +2,7 @@
 # Targets are deliberately small. Every repo using this scaffold should be
 # reproducible end-to-end with `make data && make run && make test && make report`.
 
-PYTHON ?= python
+PYTHON ?= .venv/bin/python
 UV ?= uv
 PKG := bioscaffold
 RUN_NAME ?= demo
