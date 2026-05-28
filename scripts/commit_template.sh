@@ -1,22 +1,38 @@
 #!/usr/bin/env bash
 # Commit + push template for capability-portrait repos.
 #
-# Bakes in two Polish-Phase5 lessons:
+# Bakes in three Polish-Phase5 lessons:
 #   * Lχ (zsh BANG_HIST):   commit messages use heredoc, never inline -m "..."
 #                           with possible '!' or '$!' that zsh would expand.
 #   * Lτ (pre-push gate):   client-side CJK + ruff + pytest gates before
 #                           push, so we don't waste CI round-trips on
 #                           catchable mistakes.
+#   * Lς (stale-lock guard): clear .git/index.lock and verify git status
+#                            before any staging/commit. A stale lock
+#                            silently breaks `git add` / `git commit` /
+#                            `git rm` while `git tag` and `git push --tags`
+#                            still succeed -- ghost-shipping a tag onto
+#                            the prior commit.
 #
 # How to adopt for a real day-N commit:
 #   1. Copy this file to scripts/commit_dayN.sh
 #   2. Update FILES_TO_STAGE and the heredoc commit message
 #   3. Run: bash scripts/commit_dayN.sh
 #
-# The script is tolerant of missing dev deps locally (ruff, pytest) —
+# The script is tolerant of missing dev deps locally (ruff, pytest) --
 # CI is the canonical gate; client-side is best-effort.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+# Lς: clear any stale .git/index.lock left by a prior interrupted op
+# (editor crash, background sandbox, cancelled rebase, etc). A stale
+# lock causes add/commit/rm to silently fail with `fatal: ... index.lock`
+# while later tag/push commands still succeed. Always start clean.
+if [ -f .git/index.lock ]; then
+  echo "=== Lς: removing stale .git/index.lock ==="
+  rm -f .git/index.lock
+fi
+git status >/dev/null 2>&1 || { echo "git status failed; abort"; exit 1; }
 
 # ---------------------------------------------------------------------------
 # EDIT THESE FOR YOUR COMMIT

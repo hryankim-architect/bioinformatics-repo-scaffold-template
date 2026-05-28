@@ -19,9 +19,11 @@ Promotions to date:
 | Lψ | dev-tool tolerance in commit scripts | `scripts/commit_template.sh` |
 | Lω | defensive vocabulary handling against upstream public datasets | `src/bioscaffold/vocab.py` (v0.4) |
 | Lσ | saturation as substrate primitive | `src/bioscaffold/saturation.py` (v0.4) |
+| Lς | stale `.git/index.lock` cascade failure (ghost-shipped tag) | `scripts/commit_template.sh` (v0.5), `docs/commit-script-pattern.md` |
 
-Lχ and Lτ are documented in detail in `docs/commit-script-pattern.md`. The
-three additions below (Lψ / Lω / Lσ) joined the canon in v0.3.
+Lχ, Lτ, and Lς are documented in detail in `docs/commit-script-pattern.md`.
+The three additions below (Lψ / Lω / Lσ) joined the canon in v0.3. Lς
+joined in v0.5.
 
 ---
 
