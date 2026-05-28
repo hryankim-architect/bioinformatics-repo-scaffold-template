@@ -1,10 +1,12 @@
 # `bioinformatics-repo-scaffold-template`
 
+![ci](https://github.com/hryankim-architect/bioinformatics-repo-scaffold-template/actions/workflows/ci.yml/badge.svg) ![english-only](https://github.com/hryankim-architect/bioinformatics-repo-scaffold-template/actions/workflows/english-only.yml/badge.svg)
+
 > **Template repository for capability-portrait bioinformatics projects.**
 > Click *Use this template* to start a new repo with the same shared substrate:
 > audit-chained NDJSON ledger, MLflow tracking, English-only CI, anti-scope-creep
 > guardrails, and a single `make run` entry point that reproduces the demo
-> end-to-end on a single workstation in under N minutes.
+> end-to-end on a single workstation in under a couple of minutes.
 
 A house style for reproducible bioinformatics R&D.
 
