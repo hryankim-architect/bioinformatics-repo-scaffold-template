@@ -27,12 +27,12 @@ A new repo created from this template ships with:
   enters a public artifact (lessons-learned, code comments, docs).
 - **Reproducibility baseline**: pinned dependencies via `pyproject.toml`,
   containerless `uv` workflow, no external services required for the demo.
-- **Honest-scope README template**: the six-line preamble below is enforced
+- **Scope README template**: the six-line preamble below is enforced
   in CI; production framing and lab-scope framing are kept distinct.
 
 ---
 
-## The honest-scope preamble (template — paste into the new repo's README)
+## The scope-explicit preamble (template, paste into the new repo's README)
 
 ```markdown
 # <new-repo-name>
@@ -144,9 +144,9 @@ defaults before invoking `make run`.
 - It does not install a package globally; each repo owns its own deps.
 - It does not enforce a directory structure beyond the substrate hooks.
 - It does not gate the demo on cloud credentials.
-- It does not commit raw data — only manifests, checksums, and licenses.
+- It does not commit raw data, only manifests, checksums, and licenses.
 - It does not impose a specific deconvolution / segmentation / annotation
-  tool — those are project-level choices.
+  tool, those are project-level choices.
 
 ---
 

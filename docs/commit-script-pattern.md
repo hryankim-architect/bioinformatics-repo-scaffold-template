@@ -1,4 +1,4 @@
-# Commit script pattern — pre-push gates for capability-portrait repos
+# Commit script pattern, pre-push gates for capability-portrait repos
 
 The scaffold ships `scripts/commit_template.sh` as a copy-and-customize
 template for any `commit_dayN.sh` helper. Two engineering lessons are
@@ -6,7 +6,7 @@ baked in, both surfaced during multi-day capability-portrait development.
 
 ---
 
-## Lχ — heredoc commit messages (no inline `-m`)
+## Lχ, heredoc commit messages (no inline `-m`)
 
 ### Symptom
 
@@ -28,18 +28,18 @@ triggers history expansion at parse time. This affects two common patterns:
 Use heredoc input or single-quoted strings for anything containing `!`:
 
 ```bash
-# WRONG — zsh will mangle this on the spot
+# WRONG, zsh will mangle this on the spot
 git commit -m "Day-3 results: 650 patients!"
 
-# RIGHT — heredoc, no expansion
+# RIGHT, heredoc, no expansion
 git commit -F- <<'MSG'
 Day-3 results: 650 patients!
 MSG
 
-# WRONG — $!, parsed as history reference
+# WRONG, $!, parsed as history reference
 echo "Started in background, pid=$!, log=$LOG"
 
-# RIGHT — single quotes (or split the line)
+# RIGHT, single quotes (or split the line)
 DOWNLOAD_PID=$!
 echo 'Started in background. PID + log printed separately.'
 echo "  pid=${DOWNLOAD_PID}"
@@ -56,7 +56,7 @@ operator-side scripts.
 
 ---
 
-## Lτ — pre-push CJK gate (don't waste a CI round-trip)
+## Lτ, pre-push CJK gate (don't waste a CI round-trip)
 
 ### Symptom
 
@@ -103,14 +103,14 @@ Any policy enforced by CI that's catchable client-side should also have
 a client-side gate. Costs ~50ms locally; saves a 30-90s CI round-trip
 per catchable mistake. Apply the same pattern to:
 
-- Lint (ruff) — already in commit_template.sh as a tolerant gate
+- Lint (ruff), already in commit_template.sh as a tolerant gate
   (skipped if ruff isn't locally installed; CI is canonical).
-- Unit tests (pytest) — same tolerance pattern.
-- Type checks (mypy) — same pattern if/when added.
+- Unit tests (pytest), same tolerance pattern.
+- Type checks (mypy), same pattern if/when added.
 
 ---
 
-## Lς — stale `.git/index.lock` cascade failure
+## Lς, stale `.git/index.lock` cascade failure
 
 ### Symptom
 
@@ -134,7 +134,7 @@ easy to miss when scrolling output). The intervening `git push`
 outputs `Everything up-to-date` (no new commit so nothing to push).
 **But `git tag -a vX.Y` and `git push --tags` succeed**, and so does
 `gh release create vX.Y`. End state: the new tag and GitHub Release
-exist remotely, but they point at the *prior* HEAD — the v(X.Y-1)
+exist remotely, but they point at the *prior* HEAD, the v(X.Y-1)
 cleanup commit, not the new feature commit. The release page looks
 shipped, the code isn't there.
 
@@ -149,8 +149,8 @@ every subsequent index-mutating command fails fast with the
 `fatal: ... index.lock: File exists` message.
 
 The cascade trap: `git tag`, `git push`, `git push --tags`, and
-`gh release` do **not** touch the index — they only read refs and
-objects — so they succeed cheerfully on top of the failed
+`gh release` do **not** touch the index, they only read refs and
+objects, so they succeed cheerfully on top of the failed
 `git add` / `git commit`. Multi-step heredoc-paste sequences with
 `set -e` semantics in the *user's* head but not in the shell will
 ghost-ship.

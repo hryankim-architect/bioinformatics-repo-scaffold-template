@@ -1,11 +1,11 @@
-# Polish-Phase5 lessons — scaffold-level canon
+# Polish-Phase5 lessons, scaffold-level canon
 
 Public-form engineering judgment captured during multi-week capability-portrait
 development. Each lesson follows the Symptom / Cause / Fix / Generalizing form
 that maps a single bug or near-miss into a substrate pattern future repos can
 inherit.
 
-This file ships only the lessons that have been promoted to scaffold level —
+This file ships only the lessons that have been promoted to scaffold level,
 i.e. those a future capability portrait inheriting from this template should
 pick up automatically. Internal-only lessons (~132 total across the substrate)
 remain outside the public scaffold.
@@ -27,7 +27,7 @@ joined in v0.5.
 
 ---
 
-## Lψ — dev-tool tolerance in commit scripts (don't block on missing local installs)
+## Lψ, dev-tool tolerance in commit scripts (don't block on missing local installs)
 
 ### Symptom
 
@@ -45,7 +45,7 @@ runs are an *optimization* (catch issues without burning a CI round-trip),
 not a *requirement*.
 
 When the local environment lacks the tool, the gate's correct behavior is to
-emit a notice and proceed — CI will still catch any actual problem.
+emit a notice and proceed, CI will still catch any actual problem.
 
 ### Fix
 
@@ -56,19 +56,19 @@ if not installed:
 if python3 -c "import ruff" 2>/dev/null || command -v ruff >/dev/null 2>&1; then
   python3 -m ruff check FILES_TO_STAGE \
     || ruff check FILES_TO_STAGE \
-    || { echo "ruff failed — fix before commit"; exit 1; }
+    || { echo "ruff failed, fix before commit"; exit 1; }
 else
-  echo "  (ruff not installed locally — CI will run it remotely)"
+  echo "  (ruff not installed locally, CI will run it remotely)"
 fi
 
 if python3 -c "import pytest" 2>/dev/null; then
   PYTHONPATH=src python3 -m pytest -q || { echo "pytest failed"; exit 1; }
 else
-  echo "  (pytest not installed locally — CI will run the test suite remotely)"
+  echo "  (pytest not installed locally, CI will run the test suite remotely)"
 fi
 ```
 
-Note that `set -e` still aborts on actual failures from installed tools —
+Note that `set -e` still aborts on actual failures from installed tools,
 this pattern only changes the behavior for *missing* tools, not failing
 ones.
 
@@ -77,13 +77,13 @@ ones.
 For any CI-canonical gate, the corresponding client-side gate should be
 *best-effort*: probe first, run if available, gracefully skip otherwise.
 The exception is gates that have no CI equivalent (e.g. local secret
-scanning) — those should remain hard requirements.
+scanning), those should remain hard requirements.
 
 This pattern is baked into `scripts/commit_template.sh` in v0.2.
 
 ---
 
-## Lω — defensive vocabulary handling against upstream public datasets
+## Lω, defensive vocabulary handling against upstream public datasets
 
 ### Symptom
 
@@ -160,16 +160,16 @@ drift or differ across mirrors. Always:
 This applies equally to gene symbol overlaps, sample-ID conventions
 (TCGA short-id vs Xena sample-id formats), file-format header drift, etc.
 The substrate's audit ledger already records the unmatched-row count in
-the cohort_summary.md template — that's the visible-drift mechanism.
+the cohort_summary.md template, that's the visible-drift mechanism.
 
 ---
 
-## Lσ — saturation as substrate primitive
+## Lσ, saturation as substrate primitive
 
 ### Symptom
 
 Day-4 baseline reports AUROC = 1.000 ± 0.000 across every (feature_set,
-model) combination. The audit MD's normal "Honest scope" section reads
+model) combination. The audit MD's normal "Scope" section reads
 as if this is a healthy result. Recruiter / reviewer takes it at face
 value. The PI takes a second look and realizes the task is too easy.
 
@@ -196,18 +196,18 @@ auc_means = [stats["auc_mean"] for stats in agg.values()]
 is_saturated = all(a >= 0.99 for a in auc_means)
 if is_saturated:
     honest_scope = (
-        "## Saturation finding (honest)\n\n"
+        "## Saturation finding\n\n"
         "Every (feature_set, model) combination hits AUROC >= 0.99 in 5-fold CV.\n"
-        "This is **not** a successful baseline — it means the task is too easy:\n"
+        "This is **not** a successful baseline, it means the task is too easy:\n"
         "- Was the label derived from one of the input modalities?\n"
         "- Are the two classes biologically very distinct cell types?\n"
         "- Without baseline headroom, the next-step model cannot demonstrate value.\n\n"
-        "**Honest next step**: re-scope to a harder discrimination target on the\n"
+        "**Next step**: re-scope to a harder discrimination target on the\n"
         "same cohort.\n"
     )
 else:
     honest_scope = (
-        "## Honest scope\n\n"
+        "## Scope\n\n"
         "Simple sklearn baselines on the dual-modality cohort. The point is to\n"
         "record a non-trivial comparison anchor before the next-step model runs\n"
         "against the same cohort + same CV folds.\n"
@@ -245,8 +245,8 @@ three** are true:
 
 1. It has been re-encountered in **at least two** capability-portrait sprints
    (one occurrence is "an interesting bug"; two is "a pattern").
-2. The fix has a substrate-level expression — a shared script, doc, or
-   helper module — not just a per-project code change.
+2. The fix has a substrate-level expression, a shared script, doc, or
+   helper module, not just a per-project code change.
 3. The fix has been **field-tested on at least one CI-green commit cycle**
    in a downstream capability portrait, so the migration path is known.
 
