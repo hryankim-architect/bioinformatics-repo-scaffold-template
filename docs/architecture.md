@@ -72,7 +72,7 @@ substrate-level monitoring without each project needing its own alerting.
 - No async runtime.
 - No process supervisor.
 - No container per pipeline (single Python process).
-- No data-validation framework beyond Pydantic on demand.
+- No built-in data-validation framework; add Pydantic models per project if needed.
 - No DAG engine; tools like Nextflow or Airflow belong inside the project
   body when a specific project needs them, not in the scaffold.
 
