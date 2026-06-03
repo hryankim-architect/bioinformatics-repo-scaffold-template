@@ -69,7 +69,7 @@ the word "scope" in the README). It does not require any specific string.
 ├── pyproject.toml           # uv-managed; pinned versions
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml           # ruff + pytest + scope-preamble lint
+│       ├── ci.yml           # ruff + pytest + scope-note check + canary + CJK scan
 │       └── english-only.yml # CJK character scanner
 ├── data/
 │   ├── .gitignore           # raw data never committed

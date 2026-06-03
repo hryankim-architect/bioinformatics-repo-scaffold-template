@@ -1,103 +1,79 @@
 # Architecture
 
-This template imposes a deliberately small architecture. The point is that
-every repo inheriting the scaffold has the same shape, so a reviewer can
-navigate any of them in 30 seconds.
+This template imposes a small, deliberate architecture. Every repo derived
+from the scaffold has the same shape, so a reviewer can orient themselves in
+under a minute. Repos may adapt this document to reflect their own project
+structure.
 
-## The control flow
+## Entry point
 
-```
-                  ┌──────────────────────────────────────┐
-                  │  make run                            │
-                  │  (or scripts/run_lab.sh on a node)   │
-                  └─────────────────┬────────────────────┘
-                                    │
-                                    ▼
-                  ┌──────────────────────────────────────┐
-                  │  bioscaffold.pipeline.run_pipeline   │
-                  └─────────────────┬────────────────────┘
-                                    │
-       ┌────────────────────────────┼────────────────────────────┐
-       │                            │                            │
-       ▼                            ▼                            ▼
-┌───────────────┐         ┌───────────────────┐         ┌─────────────────┐
-│ audit.emit    │         │ tracking.run      │         │  body  (per-    │
-│ (NDJSON +     │         │ (MLflow active    │         │  project, e.g.  │
-│  optional     │         │  run context)     │         │  VCF → HRD,     │
-│  POST to      │         │                   │         │  Cellpose seg., │
-│  AUDIT_HOST)  │         │                   │         │  classifier.)   │
-└───────┬───────┘         └─────────┬─────────┘         └────────┬────────┘
-        │                           │                            │
-        └───────────────────────────┴────────────────────────────┘
-                                    │
-                                    ▼
-                  ┌──────────────────────────────────────┐
-                  │  artifact JSON + metrics             │
-                  └──────────────────────────────────────┘
-```
+`make run` (or `scripts/run_lab.sh` on a lab node) calls
+`bioscaffold.pipeline.run_pipeline`. That function runs three things in
+parallel: the audit emit, the MLflow tracking context, and the project body.
+When the body finishes, it writes an artifact JSON and posts metrics.
 
-## Substrate integration points
+## Substrate contract
 
-The scaffold integrates with the Polish-Phase5 substrate through three
-loosely-coupled channels:
+The scaffold connects to a shared substrate through three loosely-coupled
+channels. Each channel degrades silently to a no-op when the substrate is
+absent, so `make run` succeeds on a laptop with no external services.
 
 | Channel | Module | Env var | Substrate endpoint |
 |---|---|---|---|
-| Audit (immutable record) | `bioscaffold.audit` | `AUDIT_HOST` | `http://${AUDIT_HOST}/events` |
-| MLflow (experiment tracking) | `bioscaffold.tracking` | `MLFLOW_TRACKING_URI` | configurable |
-| Canary (daily probe) | `bioscaffold.canary` | `BIOSCAFFOLD_CANARY_FIXTURE` | invoked by `lab_semantic_check.py` |
+| Audit | `bioscaffold.audit` | `AUDIT_HOST` | `http://${AUDIT_HOST}/events` |
+| Tracking | `bioscaffold.tracking` | `MLFLOW_TRACKING_URI` | configurable |
+| Canary | `bioscaffold.canary` | `BIOSCAFFOLD_CANARY_FIXTURE` | invoked by `lab_semantic_check.py` |
 
-All three channels degrade to no-ops when the substrate is absent. The
-deterministic local NDJSON ledger remains the source of truth for audit
-even when the remote post fails.
+When `AUDIT_HOST` is unset, audit entries are written only to the local
+NDJSON file. When `MLFLOW_TRACKING_URI` is unset, the tracking wrapper runs
+but records nothing remotely. The canary reads a local fixture file;
+`BIOSCAFFOLD_CANARY_FIXTURE` overrides the default path.
 
-## Why the NDJSON audit ledger is hash-chained
+## Audit channel: hash-chained NDJSON
 
-Every entry's `prev_hash` is the SHA-256 of the canonical (sorted, separator-
-controlled) JSON of the preceding entry. Tampering anywhere in the chain
-invalidates the hash of every following entry. The `audit.verify()` function
-walks the chain and returns `(ok, n_entries, first_bad_ts)`.
+Each audit entry carries a `prev_hash` field set to the SHA-256 of the
+canonical (sorted keys, controlled separators) JSON of the previous entry.
+Modifying any entry in the chain invalidates the hash of every entry that
+follows. `audit.verify()` walks the chain and returns `(ok, n_entries,
+first_bad_ts)`.
 
-In the Polish-Phase5 substrate this runs at ~6.19 µs/entry up to 10k entries,
-with a measured tamper-detect of ~6 ms (full chain re-verify). Repos derived
-from this scaffold do not need that scale; they inherit the format for
-*consistency* across the quartet, so the substrate's `gatk_audit.py` verifier
-works against any of them.
+On reference hardware this runs at roughly 6.19 µs per entry up to 10 000
+entries, with a full-chain tamper-detect taking around 6 ms. Derived repos
+rarely need that scale; they inherit the format so any compatible verifier
+(such as `gatk_audit.py`) can validate entries from any repo using this
+scaffold.
 
-## Why MLflow
+## Tracking channel: MLflow wrapper
 
-Three reasons, in order:
+The MLflow wrapper serves three purposes:
 
-1. **Experiment tracking**, parameters and metrics are version-controlled
-   alongside the run, so the demo's output is reproducible.
-2. **Substrate consistency**, every repo in the quartet posts to the same
-   MLflow server, so a reviewer can compare runs across projects.
-3. **No-op when absent**, the wrapper means the demo works without an MLflow
-   server, so a recruiter cloning the repo on a laptop still sees `make run`
-   succeed.
+1. Parameters and metrics are version-controlled alongside the run, making
+   the demo reproducible.
+2. All repos posting to the same MLflow server lets a reviewer compare runs
+   across projects without custom tooling.
+3. The no-op fallback means `make run` works without an MLflow server, so
+   cloning the repo on a plain laptop is enough to run the demo.
 
-## Why a deterministic canary
+## Canary channel: deterministic daily probe
 
-The canary is the entry point that the Polish-Phase5 `lab_semantic_check.py`
-probes daily. Its requirements are:
+`lab_semantic_check.py` calls the canary daily. The canary contract is:
 
-- Deterministic input (fixture-driven).
-- Under 30 seconds to complete.
+- Input is fixture-driven and fully deterministic.
+- Completes in under 30 seconds.
 - Exits 0 on success, non-zero on any deviation.
-- No external services required.
+- Requires no external services.
 
-A daily-green canary across the quartet means substrate-level monitoring
-catches regressions in any of the four capability projects without the
-projects themselves needing custom alerting.
+A daily-green canary across all repos using this scaffold gives
+substrate-level monitoring without each project needing its own alerting.
 
-## What this architecture intentionally avoids
+## What this architecture intentionally omits
 
 - No microservices.
 - No async runtime.
 - No process supervisor.
-- No container per pipeline (the scaffold runs in a single Python process).
-- No data validation framework beyond Pydantic-on-demand.
-- No DAG engine (Nextflow, Airflow, etc.), those belong inside the body
-  when a project needs them (P1 specifically), not in the scaffold.
+- No container per pipeline (single Python process).
+- No data-validation framework beyond Pydantic on demand.
+- No DAG engine; tools like Nextflow or Airflow belong inside the project
+  body when a specific project needs them, not in the scaffold.
 
-The point is that the scaffold is the *contract*, not the implementation.
+The scaffold is the contract. The implementation is up to each derived repo.
