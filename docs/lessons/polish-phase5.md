@@ -1,4 +1,4 @@
-# Polish-Phase5 lessons, scaffold-level canon
+# lessons, scaffold-level canon
 
 Public-form engineering judgment captured during multi-week capability-portrait
 development. Each lesson follows the Symptom / Cause / Fix / Generalizing form

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Commit + push template for capability-portrait repos.
 #
-# Bakes in three Polish-Phase5 lessons:
+# Bakes in three lessons:
 #   * Lχ (zsh BANG_HIST):   commit messages use heredoc, never inline -m "..."
 #                           with possible '!' or '$!' that zsh would expand.
 #   * Lτ (pre-push gate):   client-side CJK + ruff + pytest gates before

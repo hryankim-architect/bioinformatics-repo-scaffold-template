@@ -19,7 +19,7 @@ A new repo created from this template ships with:
 - **One-command demo**: `make run` reproduces the pipeline on a tiny public-data subset.
 - **Substrate hooks**: every run emits a hash-chained NDJSON audit entry, tracks
   parameters and metrics to MLflow, and exposes a canary smoke test that the
-  Polish-Phase5 `lab_semantic_check.py` can probe.
+  `lab_semantic_check.py` can probe.
 - **Scope-discipline guardrails**: required `docs/what-is-out-of-scope.md`,
   CI runtime budget, and `data/manifest.yaml` cap that forces explicit friction
   when adding samples.
@@ -132,7 +132,7 @@ demo works without the substrate present:
 | `BIOSCAFFOLD_CANARY_FIXTURE` | `tests/fixtures/canary.json` | Path used by `canary.py` for the deterministic smoke test. |
 | `BIOSCAFFOLD_RUN_NAME` | derived | Overrides the run name in audit + MLflow entries. |
 
-On a Polish-Phase5 lab node, `scripts/run_lab.sh` sets these to the lab
+On a lab node, `scripts/run_lab.sh` sets these to the lab
 defaults before invoking `make run`.
 
 ---
