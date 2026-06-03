@@ -2,11 +2,11 @@
 
 ![ci](https://github.com/hryankim-architect/bioinformatics-repo-scaffold-template/actions/workflows/ci.yml/badge.svg) ![english-only](https://github.com/hryankim-architect/bioinformatics-repo-scaffold-template/actions/workflows/english-only.yml/badge.svg)
 
-> **Template repository for capability-portrait bioinformatics projects.**
+> **Scaffold template for scope-bounded bioinformatics demos.**
 > Click *Use this template* to start a new repo with the same shared substrate:
-> audit-chained NDJSON ledger, MLflow tracking, English-only CI, anti-scope-creep
+> NDJSON audit ledger, MLflow tracking, English-only CI, scope-discipline
 > guardrails, and a single `make run` entry point that reproduces the demo
-> end-to-end on a single workstation in under a couple of minutes.
+> end-to-end in under a couple of minutes on a standard laptop or lab node.
 
 A house style for reproducible bioinformatics R&D.
 
@@ -20,43 +20,42 @@ A new repo created from this template ships with:
 - **Substrate hooks**: every run emits a hash-chained NDJSON audit entry, tracks
   parameters and metrics to MLflow, and exposes a canary smoke test that the
   Polish-Phase5 `lab_semantic_check.py` can probe.
-- **Anti-scope-creep guardrails**: required `docs/what-is-out-of-scope.md`,
+- **Scope-discipline guardrails**: required `docs/what-is-out-of-scope.md`,
   CI runtime budget, and `data/manifest.yaml` cap that forces explicit friction
   when adding samples.
 - **English-only CI**: CJK-character scanner fails CI if non-English content
   enters a public artifact (lessons-learned, code comments, docs).
 - **Reproducibility baseline**: pinned dependencies via `pyproject.toml`,
   containerless `uv` workflow, no external services required for the demo.
-- **Scope README template**: the six-line preamble below is enforced
-  in CI; production framing and lab-scope framing are kept distinct.
+- **Scope note in README**: CI checks that the new repo's README contains
+  a `## Caveats` section (or equivalent scope note). Exact wording is up
+  to the repo author.
 
 ---
 
-## The scope-explicit preamble (template, paste into the new repo's README)
+## The scope note (write your own, in the new repo's README)
 
-```markdown
-# <new-repo-name>
+Every repo created from this template must include a short data-scope note
+near the top of its README. Describe the scope in your own words — do not
+copy a fixed sentence. The goal is to tell a reader what the demo data covers
+and does not cover, so each repo's note will differ.
 
-> **Capability portrait, not a research result.** Public data is intentionally
-> subsetted to keep the demo small and reproducible on a single workstation.
+Example phrasings (pick none of these verbatim; write one that fits your
+project):
 
-**What this shows**: <one-line capability claim>
+- "Public data is subsetted to chromosome 22 for demo runtime; full-cohort
+  results are out of scope here."
+- "Demo uses 50 TCGA samples. Findings are illustrative, not statistically
+  powered."
+- "This repo exercises the method on a small public cohort. Production-scale
+  runs used proprietary data not included here."
 
-**Reproducibility**: `make run` produces the demo output in < N minutes on a
-single Mac/Linux box.
+Place the note in a `## Caveats` section, or inline in the opening
+description — wherever it reads naturally. Vary the wording per repo so repos
+do not all read identically.
 
-**Substrate**: emits audit (NDJSON), tracks MLflow runs, observable via
-AgentOps SSE.
-
-**Production framing**: A version of this method ran at full cohort scale on
-proprietary data during my time in industry. The lab version here proves the
-*method* and the *engineering*, not the result. See
-[`docs/what-is-out-of-scope.md`](docs/what-is-out-of-scope.md).
-```
-
-The lint job in `.github/workflows/ci.yml` checks that the new repo's README
-contains the phrase "Capability portrait, not a research result." If a
-contributor strips the preamble, CI fails.
+CI checks that a scope note is present (looks for a `## Caveats` section or
+the word "scope" in the README). It does not require any specific string.
 
 ---
 
@@ -88,7 +87,7 @@ contributor strips the preamble, CI fails.
 │   └── demo.ipynb           # rendered output committed alongside .ipynb
 ├── docs/
 │   ├── architecture.md      # substrate integration diagram
-│   └── what-is-out-of-scope.md  # required anti-scope-creep page
+│   └── what-is-out-of-scope.md  # required scope-boundary page
 └── scripts/
     └── run_lab.sh           # one-liner to execute on a lab node
 ```

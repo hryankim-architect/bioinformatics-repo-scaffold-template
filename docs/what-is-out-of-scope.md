@@ -6,11 +6,10 @@ it as part of the review checklist.
 
 ## Why this file exists
 
-A capability-portrait repo's value comes from being *small and complete*. The
-single largest risk to that value is the steady accumulation of "while we're
-here, let's also..." additions. This file is the anti-scope-creep ledger.
-If a PR proposes something on this list, the PR template asks the contributor
-to answer one question:
+A demo repo's value comes from being *small and complete*. The single largest
+risk to that value is the steady accumulation of "while we're here, let's also..."
+additions. This file is the scope-boundary ledger. If a PR proposes something
+on this list, the PR template asks the contributor to answer one question:
 
 > Why is this still out of scope?
 
@@ -29,7 +28,7 @@ good, the PR doesn't land.
 - **Multi-cohort meta-analysis**. Out of scope unless this repo's capability
   *is* meta-analysis.
 - **Production hardening** (HA, RBAC, multi-tenant). The substrate provides
-  the foundation; the capability portrait does not re-implement it.
+  the foundation; this repo does not re-implement it.
 - **Cost optimization for cloud deployment**. The demo runs on a single
   workstation; cloud cost is by definition out of scope.
 

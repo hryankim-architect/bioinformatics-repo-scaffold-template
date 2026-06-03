@@ -1,8 +1,8 @@
 # Architecture
 
 This template imposes a deliberately small architecture. The point is that
-every capability-portrait repo inheriting the scaffold has the same shape, so
-a reviewer can navigate any of them in 30 seconds.
+every repo inheriting the scaffold has the same shape, so a reviewer can
+navigate any of them in 30 seconds.
 
 ## The control flow
 
@@ -51,7 +51,7 @@ All three channels degrade to no-ops when the substrate is absent. The
 deterministic local NDJSON ledger remains the source of truth for audit
 even when the remote post fails.
 
-## Why a hash-chained NDJSON ledger
+## Why the NDJSON audit ledger is hash-chained
 
 Every entry's `prev_hash` is the SHA-256 of the canonical (sorted, separator-
 controlled) JSON of the preceding entry. Tampering anywhere in the chain
@@ -59,8 +59,8 @@ invalidates the hash of every following entry. The `audit.verify()` function
 walks the chain and returns `(ok, n_entries, first_bad_ts)`.
 
 In the Polish-Phase5 substrate this runs at ~6.19 µs/entry up to 10k entries,
-with a measured tamper-detect of ~6 ms (full chain re-verify). Capability-
-portrait repos do not need that scale; they inherit the format for
+with a measured tamper-detect of ~6 ms (full chain re-verify). Repos derived
+from this scaffold do not need that scale; they inherit the format for
 *consistency* across the quartet, so the substrate's `gatk_audit.py` verifier
 works against any of them.
 

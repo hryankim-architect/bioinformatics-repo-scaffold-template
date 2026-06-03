@@ -6,8 +6,8 @@ that maps a single bug or near-miss into a substrate pattern future repos can
 inherit.
 
 This file ships only the lessons that have been promoted to scaffold level,
-i.e. those a future capability portrait inheriting from this template should
-pick up automatically. Internal-only lessons (~132 total across the substrate)
+i.e. those a future repo inheriting from this template should pick up
+automatically. Internal-only lessons (~132 total across the substrate)
 remain outside the public scaffold.
 
 Promotions to date:
@@ -248,7 +248,7 @@ three** are true:
 2. The fix has a substrate-level expression, a shared script, doc, or
    helper module, not just a per-project code change.
 3. The fix has been **field-tested on at least one CI-green commit cycle**
-   in a downstream capability portrait, so the migration path is known.
+   in a downstream repo, so the migration path is known.
 
 Lψ, Lω, Lσ all cleared this bar during the DMOI POC Week-1 sprint
 (2026-05-26 → 2026-05-27), which is why they ship in v0.3.

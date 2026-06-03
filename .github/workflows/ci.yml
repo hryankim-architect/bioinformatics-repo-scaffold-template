@@ -31,10 +31,10 @@ jobs:
       - name: Run tests
         run: uv run pytest -q
 
-      - name: Verify honest-scope README preamble
+      - name: Verify scope note in README
         run: |
-          if ! grep -q "Capability portrait, not a research result" README.md; then
-            echo "::error::README.md is missing the honest-scope preamble"
+          if ! grep -qiE "(## Caveats|scope)" README.md; then
+            echo "::error::README.md is missing a data-scope note (add a ## Caveats section or mention scope)"
             exit 1
           fi
 
