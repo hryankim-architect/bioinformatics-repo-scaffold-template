@@ -1,10 +1,10 @@
 # `bioinformatics-repo-scaffold-template`
 
-![ci](https://github.com/hryankim-architect/bioinformatics-repo-scaffold-template/actions/workflows/ci.yml/badge.svg) ![english-only](https://github.com/hryankim-architect/bioinformatics-repo-scaffold-template/actions/workflows/english-only.yml/badge.svg)
+![ci](https://github.com/hryankim-architect/bioinformatics-repo-scaffold-template/actions/workflows/ci.yml/badge.svg)
 
 > **Scaffold template for scope-bounded bioinformatics demos.**
 > Click *Use this template* to start a new repo with the same shared substrate:
-> NDJSON audit ledger, MLflow tracking, English-only CI, scope-discipline
+> NDJSON audit ledger, MLflow tracking, English-only pre-commit check, scope-discipline
 > guardrails, and a single `make run` entry point that reproduces the demo
 > end-to-end in under a couple of minutes on a standard laptop or lab node.
 
@@ -23,8 +23,8 @@ A new repo created from this template ships with:
 - **Scope-discipline guardrails**: required `docs/what-is-out-of-scope.md`,
   CI runtime budget, and `data/manifest.yaml` cap that forces explicit friction
   when adding samples.
-- **English-only CI**: CJK-character scanner fails CI if non-English content
-  enters a public artifact (lessons-learned, code comments, docs).
+- **English-only check**: a local pre-commit hook (`scripts/check_english_only.py`)
+  blocks commits that add non-English content to a public artifact.
 - **Reproducibility baseline**: pinned dependencies via `pyproject.toml`,
   containerless `uv` workflow, no external services required for the demo.
 - **Scope note in README**: CI checks that the new repo's README contains
@@ -69,8 +69,7 @@ the word "scope" in the README). It does not require any specific string.
 ├── pyproject.toml           # uv-managed; pinned versions
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml           # ruff + pytest + scope-note check + canary + CJK scan
-│       └── english-only.yml # CJK character scanner
+│       └── ci.yml           # ruff + pytest + scope-note check + canary
 ├── data/
 │   ├── .gitignore           # raw data never committed
 │   └── manifest.yaml        # public URLs + checksums for the tiny subset
