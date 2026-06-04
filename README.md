@@ -2,6 +2,10 @@
 
 ![ci](https://github.com/hryankim-architect/bioinformatics-repo-scaffold-template/actions/workflows/ci.yml/badge.svg)
 
+> **One principle, applied here.** Pick the smallest, most interpretable representation that could carry the signal; measure it against an honest baseline; report the verdict faithfully — whether the compact choice wins, ties, or loses. *That last step is why AI safety is needed: knowing a capability is real rather than a flattering benchmark.*
+>
+> In this repo: **representation** the shared substrate scaffold every capability repo inherits → **baseline** ad-hoc, unaudited demos → **verdict** the scaffold makes the principle *reproducible*: audit + MLflow + canary + English-only CI + honest-scope README by default.
+
 > **Scaffold template for scope-bounded bioinformatics demos.**
 > Click *Use this template* to start a new repo with the same shared substrate:
 > NDJSON audit ledger, MLflow tracking, English-only pre-commit check, scope-discipline
