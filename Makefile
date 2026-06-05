@@ -20,7 +20,7 @@ help:
 	@echo "make report       Render demo notebook to HTML at reports/demo.html"
 	@echo "make lint         ruff check"
 	@echo "make canary       Run the deterministic canary smoke test"
-	@echo "make  Check the honest-scope preamble is present in README"
+	@echo "  (scope note checked by CI inline — no separate make target)"
 	@echo "make clean        Remove build artifacts (raw data left alone)"
 
 install:

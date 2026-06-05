@@ -80,12 +80,15 @@ the word "scope" in the README). It does not require any specific string.
 │   ├── pipeline.py          # CLI entry; demonstrates audit + tracking pattern
 │   ├── audit.py             # NDJSON hash-chained ledger emit
 │   ├── tracking.py          # MLflow run wrapper
-│   └── canary.py            # smoke test interface for lab_semantic_check.py
+│   ├── canary.py            # smoke test interface for lab_semantic_check.py
+│   ├── saturation.py        # saturation-detection helper (Lσ primitive)
+│   └── vocab.py             # defensive vocabulary filter (Lω primitive)
 ├── tests/
 │   ├── test_pipeline.py
-│   └── test_canary.py
-├── notebooks/
-│   └── demo.ipynb           # rendered output committed alongside .ipynb
+│   ├── test_canary.py
+│   ├── test_saturation.py
+│   └── test_vocab.py
+├── notebooks/               # add demo.ipynb in derived repo
 ├── docs/
 │   ├── architecture.md      # substrate integration diagram
 │   └── what-is-out-of-scope.md  # required scope-boundary page
