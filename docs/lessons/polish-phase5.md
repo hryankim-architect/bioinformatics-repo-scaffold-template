@@ -15,13 +15,12 @@ Promotions to date:
 | Lesson | Title | Substrate impact |
 |---|---|---|
 | Lχ | heredoc commit messages (no inline `-m`) | `scripts/commit_template.sh` |
-| Lτ | pre-push CJK gate | `scripts/check_english_only.py` invoked from commit scripts |
 | Lψ | dev-tool tolerance in commit scripts | `scripts/commit_template.sh` |
 | Lω | defensive vocabulary handling against upstream public datasets | `src/bioscaffold/vocab.py` (v0.4) |
 | Lσ | saturation as substrate primitive | `src/bioscaffold/saturation.py` (v0.4) |
 | Lς | stale `.git/index.lock` cascade failure (ghost-shipped tag) | `scripts/commit_template.sh` (v0.5), `docs/commit-script-pattern.md` |
 
-Lχ, Lτ, and Lς are documented in detail in `docs/commit-script-pattern.md`.
+Lχ and Lς are documented in detail in `docs/commit-script-pattern.md`.
 The three additions below (Lψ / Lω / Lσ) joined the canon in v0.3. Lς
 joined in v0.5.
 

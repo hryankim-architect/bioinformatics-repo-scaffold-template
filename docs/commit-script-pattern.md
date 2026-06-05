@@ -56,60 +56,6 @@ operator-side scripts.
 
 ---
 
-## Lτ, pre-push CJK gate (don't waste a CI round-trip)
-
-### Symptom
-
-Push a commit that accidentally contains CJK characters in a public
-artifact (README, audit MD, code comment). CI fails the english-only
-job. Round-trip cost: push → wait for CI → fix → push again.
-
-### Cause
-
-The scaffold's english-only enforcement was originally CI-side only
-(`.github/workflows/english-only.yml`). The check_english_only.py
-script existed locally, but commit helpers never invoked it pre-push.
-Mistakes (e.g. a leftover Korean comment) only surfaced after the
-push.
-
-### Fix
-
-Every `commit_*.sh` helper runs `python3 scripts/check_english_only.py`
-as a pre-push gate. The scanner exits non-zero if it finds any CJK
-character in tracked + staged public artifacts. The shell script's
-`set -e` aborts the push.
-
-```bash
-echo "=== Pre-push CJK gate (Lτ) ==="
-python3 scripts/check_english_only.py
-```
-
-The scanner's default globs already cover the public surface:
-
-```
-README.md
-src/**/*.py
-tests/**/*.py
-docs/**/*.md
-audit/**/*.md          # added v0.2; previously not scanned
-scripts/**/*.sh
-scripts/**/*.py
-.github/workflows/**/*.yml
-```
-
-### Generalizing
-
-Any policy enforced by CI that's catchable client-side should also have
-a client-side gate. Costs ~50ms locally; saves a 30-90s CI round-trip
-per catchable mistake. Apply the same pattern to:
-
-- Lint (ruff), already in commit_template.sh as a tolerant gate
-  (skipped if ruff isn't locally installed; CI is canonical).
-- Unit tests (pytest), same tolerance pattern.
-- Type checks (mypy), same pattern if/when added.
-
----
-
 ## Lς, stale `.git/index.lock` cascade failure
 
 ### Symptom
@@ -196,5 +142,5 @@ up at the correct commit (`ed38f95`).
 4. Run: `bash scripts/commit_dayN.sh`.
 
 The script will clear any stale `.git/index.lock` (Lς), run the
-pre-push gates (Lτ + ruff + pytest), abort on failure, otherwise
+pre-push gates (ruff + pytest), abort on failure, otherwise
 commit + push + tail the resulting GitHub Actions runs.

@@ -4,11 +4,11 @@
 
 > **One principle, applied here.** Pick the smallest, most interpretable representation that could carry the signal; measure it against an honest baseline; report the verdict faithfully — whether the compact choice wins, ties, or loses. *That last step is why AI safety is needed: knowing a capability is real rather than a flattering benchmark.*
 >
-> In this repo: **representation** the shared substrate scaffold every capability repo inherits → **baseline** ad-hoc, unaudited demos → **verdict** the scaffold makes the principle *reproducible*: audit + MLflow + canary + English-only CI + honest-scope README by default.
+> In this repo: **representation** the shared substrate scaffold every capability repo inherits → **baseline** ad-hoc, unaudited demos → **verdict** the scaffold makes the principle *reproducible*: audit + MLflow + canary + honest-scope README by default.
 
 > **Scaffold template for scope-bounded bioinformatics demos.**
 > Click *Use this template* to start a new repo with the same shared substrate:
-> NDJSON audit ledger, MLflow tracking, English-only pre-commit check, scope-discipline
+> NDJSON audit ledger, MLflow tracking, scope-discipline
 > guardrails, and a single `make run` entry point that reproduces the demo
 > end-to-end in under a couple of minutes on a standard laptop or lab node.
 
@@ -27,8 +27,6 @@ A new repo created from this template ships with:
 - **Scope-discipline guardrails**: required `docs/what-is-out-of-scope.md`,
   CI runtime budget, and `data/manifest.yaml` cap that forces explicit friction
   when adding samples.
-- **English-only check**: a local pre-commit hook (`scripts/check_english_only.py`)
-  blocks commits that add non-English content to a public artifact.
 - **Reproducibility baseline**: pinned dependencies via `pyproject.toml`,
   containerless `uv` workflow, no external services required for the demo.
 - **Scope note in README**: CI checks that the new repo's README contains

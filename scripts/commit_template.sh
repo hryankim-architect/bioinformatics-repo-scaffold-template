@@ -4,7 +4,7 @@
 # Bakes in three lessons:
 #   * Lχ (zsh BANG_HIST):   commit messages use heredoc, never inline -m "..."
 #                           with possible '!' or '$!' that zsh would expand.
-#   * Lτ (pre-push gate):   client-side CJK + ruff + pytest gates before
+#   * Lτ (pre-push gate):   client-side ruff + pytest gates before
 #                           push, so we don't waste CI round-trips on
 #                           catchable mistakes.
 #   * Lς (stale-lock guard): clear .git/index.lock and verify git status
@@ -57,10 +57,6 @@ if python3 -c "import pytest" 2>/dev/null; then
 else
   echo "  (pytest not installed locally — CI will run the test suite remotely)"
 fi
-
-echo "=== Pre-push CJK gate (Lτ) ==="
-# Run the scaffold's own scanner against tracked + staged files.
-python3 scripts/check_english_only.py
 
 echo "=== Staging files ==="
 git add "${FILES_TO_STAGE[@]}"
