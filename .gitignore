@@ -47,3 +47,6 @@ Thumbs.db
 .env.local
 *.pem
 *.key
+
+# Stray pytest temp dirs
+pytest-cache-files-*/

@@ -36,6 +36,10 @@ test:
 	$(PYTHON) -m pytest -q
 
 report: | $(REPORT_DIR)
+	@if [ ! -f notebooks/demo.ipynb ]; then \
+	  echo "make report: notebooks/demo.ipynb not present (the scaffold ships no demo notebook; add one in a capability repo)."; \
+	  exit 1; \
+	fi
 	$(PYTHON) -m jupyter nbconvert --to html --output-dir $(REPORT_DIR) notebooks/demo.ipynb
 
 lint:
