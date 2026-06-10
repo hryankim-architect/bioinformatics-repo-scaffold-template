@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import json
 import time
+import urllib.error
 import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
@@ -59,7 +60,32 @@ def fetch_manifest(manifest_path: Path, out_dir: Path) -> dict[str, Any]:
             results.append({"path": str(dest), "status": "cached"})
             continue
 
-        urllib.request.urlretrieve(url, dest)
+        # This is a template: the shipped manifest is a placeholder. Detect the
+        # stub and emit a clear, actionable status instead of a raw HTTP traceback.
+        is_stub = (
+            "example.org" in url
+            or "example.com" in url
+            or (expected is not None and set(expected) == {"0"})
+        )
+        if is_stub:
+            results.append({
+                "path": str(dest),
+                "status": "stub",
+                "note": "placeholder manifest entry — replace data/manifest.yaml "
+                        "with a real url + sha256 for this repo",
+            })
+            continue
+
+        try:
+            urllib.request.urlretrieve(url, dest)
+        except (urllib.error.URLError, OSError) as exc:
+            results.append({
+                "path": str(dest),
+                "status": "fetch_failed",
+                "url": url,
+                "error": str(exc),
+            })
+            continue
         actual = _checksum(dest)
         if expected and actual != expected:
             results.append({
